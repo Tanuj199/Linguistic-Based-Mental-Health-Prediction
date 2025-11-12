@@ -1,4 +1,11 @@
 import gradio as gr
+# FIX: Added necessary imports for file checking, object loading, and regex
+import os
+import pickle
+import re
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+
 
 # Parameters
 MAX_LEN = 100
@@ -6,12 +13,19 @@ MAX_LEN = 100
 # Check if model and tokenizer files exist
 if not os.path.exists('best_model.h5') or not os.path.exists('tokenizer.pkl'):
     print("Error: Model or tokenizer files not found. Please run 1_data_preprocessing.py and 2_model_training.py first.")
+    # FIX: Exit gracefully if files are missing.
     exit()
 
 # Load the trained model and tokenizer
-model = load_model('best_model.h5')
-with open('tokenizer.pkl', 'rb') as handle:
-    tokenizer = pickle.load(handle)
+# Assuming load_model is available via an import (it usually is if you use Keras/TF)
+try:
+    model = load_model('best_model.h5')
+    with open('tokenizer.pkl', 'rb') as handle:
+        tokenizer = pickle.load(handle)
+except Exception as e:
+    print(f"Error loading model or tokenizer: {e}")
+    exit()
+
 
 print("Model and tokenizer loaded for prediction.")
 
